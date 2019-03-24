@@ -1,0 +1,170 @@
+package com.test.web.security;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+@EnableWebSecurity
+@Configuration
+@ComponentScan
+public class WebSecurityConfig extends
+WebSecurityConfigurerAdapter {
+
+@Override
+protected void configure(HttpSecurity http) throws Exception {
+ http
+   // ...
+   .headers();
+}
+}
+
+====
+https://docs.spring.io/spring-security/site/docs/3.2.0.RELEASE/reference/htmlsingle/#default-security-headers
+===
+
+import java.io.IOException;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+
+public final class XssFilter implements Filter {
+
+    static class FilteredRequest extends HttpServletRequestWrapper {
+
+        /* These are the characters allowed by the Javascript validation */
+        static String allowedChars = "+-0123456789#*";
+
+        public FilteredRequest(ServletRequest request) {
+            super((HttpServletRequest)request);
+        }
+
+        public String sanitize(String input) {
+            String result = "";
+            for (int i = 0; i < input.length(); i++) {
+                if (allowedChars.indexOf(input.charAt(i)) >= 0) {
+                    result += input.charAt(i);
+                }
+            }
+            return result;
+        }
+
+        public String getParameter(String paramName) {
+            String value = super.getParameter(paramName);
+            if ("dangerousParamName".equals(paramName)) {
+                value = sanitize(value);
+            }
+            return value;
+        }
+
+        public String[] getParameterValues(String paramName) {
+            String values[] = super.getParameterValues(paramName);
+            if ("dangerousParamName".equals(paramName)) {
+                for (int index = 0; index < values.length; index++) {
+                    values[index] = sanitize(values[index]);
+                }
+            }
+            return values;
+        }
+    }
+
+    public void doFilter(ServletRequest request, ServletResponse response,
+            FilterChain chain) throws IOException, ServletException {
+        chain.doFilter(new FilteredRequest(request), response);
+    }
+
+    public void destroy() {
+    }
+
+    public void init(FilterConfig filterConfig) {
+    }
+}
+
+====
+
+import java.io.IOException;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+
+public final class XssFilter implements Filter {
+
+    static class FilteredRequest extends HttpServletRequestWrapper {
+
+        /* These are the characters allowed by the Javascript validation */
+        static String allowedChars = "+-0123456789#*";
+
+        public FilteredRequest(ServletRequest request) {
+            super((HttpServletRequest)request);
+        }
+
+        public String sanitize(String input) {
+            String result = "";
+            for (int i = 0; i < input.length(); i++) {
+                if (allowedChars.indexOf(input.charAt(i)) >= 0) {
+                    result += input.charAt(i);
+                }
+            }
+            return result;
+        }
+
+        public String getParameter(String paramName) {
+            String value = super.getParameter(paramName);
+            if ("dangerousParamName".equals(paramName)) {
+                value = sanitize(value);
+            }
+            return value;
+        }
+
+        public String[] getParameterValues(String paramName) {
+            String values[] = super.getParameterValues(paramName);
+            if ("dangerousParamName".equals(paramName)) {
+                for (int index = 0; index < values.length; index++) {
+                    values[index] = sanitize(values[index]);
+                }
+            }
+            return values;
+        }
+    }
+
+    public void doFilter(ServletRequest request, ServletResponse response,
+            FilterChain chain) throws IOException, ServletException {
+        chain.doFilter(new FilteredRequest(request), response);
+    }
+
+    public void destroy() {
+    }
+
+    public void init(FilterConfig filterConfig) {
+    }
+}
+
+====
+https://thoughtfulsoftware.wordpress.com/2013/05/26/sanitizing-user-input-part-ii-validation-with-spring-rest/
+===
+https://www.javacodegeeks.com/2012/07/anti-cross-site-scripting-xss-filter.html
+===
+https://dzone.com/articles/anti-cross-site-scripting-xss-for-spring-boot-apps
+====
+http://www.springboottutorial.com/spring-boot-validation-for-rest-services
+===
+https://happycoding.io/tutorials/java-server/sanitizing-user-input
+===
+https://codereview.stackexchange.com/questions/112495/preventing-xss-attacks-in-a-spring-mvc-application-controller
+===
+https://stackoverflow.com/questions/5769847/how-to-avoid-apps-from-xss-attacks/5769859#5769859
+===
+https://blog.frankel.ch/sanitizing-webapp-outputs-as-an-an-afterthought/
