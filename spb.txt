@@ -1,0 +1,90 @@
+adding external jars - dependencies and versions
+
+commons-logging-1.1.1
+
+spring-aop-4.1.6.RELEASE
+
+spring-aspects-4.1.6.RELEASE
+
+spring-beans-4.1.6.RELEASE
+
+spring-context-4.1.6.RELEASE
+
+spring-context-support-4.1.6.RELEASE
+
+spring-core-4.1.6.RELEASE
+
+spring-expression-4.1.6.RELEASE
+
+spring-instrument-4.1.6.RELEASE
+
+spring-instrument-tomcat-4.1.6.RELEASE
+
+spring-jdbc-4.1.6.RELEASE
+
+spring-jms-4.1.6.RELEASE
+
+spring-messaging-4.1.6.RELEASE
+
+spring-orm-4.1.6.RELEASE
+
+spring-oxm-4.1.6.RELEASE
+
+spring-test-4.1.6.RELEASE
+
+spring-tx-4.1.6.RELEASE
+
+spring-web-4.1.6.RELEASE
+
+spring-webmvc-4.1.6.RELEASE
+
+spring-webmvc-portlet-4.1.6.RELEASE
+
+spring-websocket-4.1.6.RELEASE
+
+--
+beans in beans.xml
+
+Spring requires defining the dispatcher servlet, mappings, and other supporting configurations. We can do this using either the web.xml file or an Initializer class
+@EnableWebMvc
+@Configuration
+public class ClientWebConfig implements WebMvcConfigurer { 
+   @Bean
+   public ViewResolver viewResolver() {
+      InternalResourceViewResolver bean
+        = new InternalResourceViewResolver();
+      bean.setViewClass(JstlView.class);
+      bean.setPrefix("/WEB-INF/view/");
+      bean.setSuffix(".jsp");
+      return bean;
+   }
+}
+
+spring.mvc.view.prefix=/WEB-INF/jsp/
+spring.mvc.view.suffix=.jsp
+----
+deployment
+https://www.dailyrazor.com/blog/how-to-deploy-spring-application-in-tomcat/
+server
+---
+production ready features
+===
+https://www.javatpoint.com/spring-boot-jdbc
+https://www.javatpoint.com/spring-JdbcTemplate-tutorial
+===
+
+agenda
+ask questions
+what springboot
+why springboot
+about application
+annotations used
+config differences
+mvc diagram
+first page ui
+first page ui jsp code
+validation ui
+validation ui code
+webservice client generation
+client connection configurations
+client connection code
